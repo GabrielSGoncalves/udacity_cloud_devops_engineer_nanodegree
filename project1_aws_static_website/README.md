@@ -27,19 +27,7 @@ In order to have control over the cloud infrastructure created for the project, 
 
 ## Creating the S3 bucket
 To create the S3 bucket I can use the Terraform resource block bellow:
-
-
-```text title="main.tf"
-resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-855655753923-bucket"
-
-  tags = {
-    project = "s3 static website"
-  }
-}
-```
-
-```tf title="main.tf"
+```tf
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "my-855655753923-bucket"
 
@@ -50,7 +38,55 @@ resource "aws_s3_bucket" "my_bucket" {
 ```
 
 ## Making the S3 bucket publicly accessible
-Next step consists in allow public access to the S3 bucket. Again we leveraged the 
+Next step consists in allow public access to the S3 bucket, creating a bucket policy and also configuring the index and error files for the website. Again we leveraged Terraform resources:
+```tf
+resource "aws_s3_bucket_public_access_block" "bucket_public_access" {
+  bucket = aws_s3_bucket.my_bucket.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  bucket = aws_s3_bucket.my_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid = "AddPerm"
+        Effect = "Allow"
+        Principal = "*"
+        Action = ["s3:GetObject"]
+        Resource = ["arn:aws:s3:::my-855655753923-bucket/*"]
+      }
+    ]
+  })
+}
+
+resource "aws_s3_bucket_website_configuration" "website_config" {
+  bucket = aws_s3_bucket.my_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "index.html"
+  }
+}
+```
+We can see the changes made to the S3 bucket from the AWS console (bellow):
+![Hosting configuraiton](images/s3_website_hosting_config.png)
+
+And finally, if you go to the bucket website endpoint, you are able to see the Website already available.
+![Website Landing Page](images/website_landing_page.png)
+
+All the Terraform code blocks described above can be found in file `s3.tf`.
+
+## Distributing Website via CloudFront
+
 
 ## Uploading files to S3
 The project description required that I used the provided files for static website:
