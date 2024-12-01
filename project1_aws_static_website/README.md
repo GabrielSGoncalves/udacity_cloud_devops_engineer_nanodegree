@@ -106,6 +106,9 @@ terraform plan
 terraform apply
 ```
 
+![S3 bucket](images/s3_bucket_creation.png)
+
+
 ## Uploading files to S3
 The project description requires that we use the provided files for static website:
 
@@ -162,6 +165,11 @@ resource "aws_s3_bucket_website_configuration" "website_config" {
   }
 }
 ```
+
+Bellow is the bucket policy created:
+
+![Bucket policy](images/s3_bucket_policy.png)
+
 We can see the changes made to the S3 bucket from the AWS console (bellow):
 
 ![Hosting configuration](images/s3_website_hosting_config.png)
@@ -224,6 +232,9 @@ resource "aws_cloudfront_distribution" "s3_website_distribution" {
   }
 }
 ```
+Bellow is the picture showing CloudFront Distribution created.
+
+![CloudFront Enabled](images/cloudfront_enabled.png)
 
 CloudFront takes a few minutes to become available, generating a new Distribution domain name that can be browsed as a regular website. In our case it was the `https://d3c6z77ykij57g.cloudfront.net`.
 
