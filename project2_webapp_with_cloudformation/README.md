@@ -8,7 +8,8 @@ In this project we are going to explore CloudFormation as the IaC framework for 
 1. Create a diagram for the web app cloud architecture
 2. Use CloudFormation to deploy the web application on AWS.
 
-## Step 1 ...
+## Diagram
+![Diagram Description](udacity_project_2_architecture_diagram.drawio.svg)
 
 
 ## Final thoughts
