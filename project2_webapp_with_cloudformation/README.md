@@ -13,13 +13,34 @@ Since the underlying network infrastructure will be maintained by a separate tea
 
 Infrastructure spin up and tear down needs to be automated so that each team can create and discard testing environments on demand.
 ```
+![Project Description Diagram](images/project.jpeg)
 
 ## Objectives
+Based on the description, we have the following project objectives:
 1. Create a diagram for the web app cloud architecture
-2. Use CloudFormation to deploy the web application on AWS.
+2. Deploy the web application on AWS using CloudFormation
+
+
 
 ## Diagram
-![Diagram Description](udacity_project_2_architecture_diagram.drawio.svg)
+In order to facilitate the implementation of the Cloud Solution request on the project, we have designed a diagram that represents all the used AWS resources.
+
+![Diagram Description](images/udacity_project_2_architecture_diagram.drawio.svg)
+
+-> Describe overview of the architecture
+
+## Cloud Infrastructure resource requirements
+Bellow is the requirements that were demanded by the client:
+
+### Network and Servers Configuration
+
+1. You can deploy to any region.
+2. You'll need to create the networking infrastructure for your solution, including a new VPC and four subnets: two public and two private, following high availability best practices.
+3. Use a parameters JSON file to pass CIDR blocks for your VPC and subnets.
+4. You'll need to attach Internet and NAT gateways for internet access.
+5. You'll need to use Launch Templates to create an Autoscaling Group for your application servers in order to deploy four servers, two located in each of your private subnets.
+6. Your CPU and RAM requirements will be covered with t2.micro instances, so use this instance type. The Operating System to be used is Ubuntu 22.
+7. The application must be exposed to the internet using an Application Load Balancer.
 
 
 ## Final thoughts
