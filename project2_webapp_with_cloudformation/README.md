@@ -59,7 +59,20 @@ scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/ec2.yml paramet
 After a few minutes with the stack showing the status `CREATE_COMPLETE`, we followed with the deployment of our servers.
 
 ```
-scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/networking.yml parameters/networking-parameters.json
+scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/ec2.yml parameters/ec2-parameters.json
+```
+
+## Resources created
+The images below illustrate the AWS resources created through the above CloudFormation stacks.
+
+### S3 buckets
+![S3 buckets](images/s3_buckets_project2.png)
+
+## Deleting resources
+After using the cloud infrustructure designed in this project, we may want to delete it, in order to avoid cloud cost. We can also use our `run.sh` script for it:
+```bash
+scripts/run.sh delete us-east-1 UdagramEC2
+scripts/run.sh delete us-east-1 UdagramNetworking
 ```
 
 ## Final thoughts
