@@ -42,6 +42,25 @@ Bellow is the requirements that were demanded by the client:
 6. Your CPU and RAM requirements will be covered with t2.micro instances, so use this instance type. The Operating System to be used is Ubuntu 22.
 7. The application must be exposed to the internet using an Application Load Balancer.
 
+## Deploying the Cloud Infrastructure
+Our cloud infrastructure is defined in the following files:
+- stack_templates/networking.yml
+- stack_templates/ec2.yml
+- parameters/networking-parameters.json
+- parameters/ec2-parameters.json
+
+We have created a bash script to help us in the process of creating and deleting CloudFormation infrastructure. The script can be found in `scripts/run.sh`.
+
+We first deployed our VPC and associated networking resources using the `run.sh` script:
+```bash
+scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/ec2.yml parameters/ec2-parameters.json
+```
+
+After a few minutes with the stack showing the status `CREATE_COMPLETE`, we followed with the deployment of our servers.
+
+```
+scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/networking.yml parameters/networking-parameters.json
+```
 
 ## Final thoughts
 
