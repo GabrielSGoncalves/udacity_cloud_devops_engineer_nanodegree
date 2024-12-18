@@ -1,0 +1,14 @@
+[
+    {
+      "ParameterKey": "EnvironmentName",
+      "ParameterValue": "UdagramDevEnvironment"
+    },
+    {
+      "ParameterKey": "InstanceType",
+      "ParameterValue": "t2.micro"
+    },
+    {
+      "ParameterKey": "S3BucketName",
+      "ParameterValue": "udacity-devops-nanodegree-projec2-static-content"
+    }
+  ]
