@@ -27,7 +27,26 @@ In order to facilitate the implementation of the Cloud Solution request on the p
 
 ![Diagram Description](images/udacity_project_2_architecture_diagram.drawio.svg)
 
--> Describe overview of the architecture
+### Key Architecture Components
+#### 1. Network Design
+- VPC: 10.0.0.0/16 IP range
+- Availability Zones: 2 AZs used for high availability
+- Subnets:
+    - 2 Public Subnets (10.0.0.0/24, 10.0.1.0/24)
+    - 2 Private Subnets (10.0.2.0/24, 10.0.3.0/24)
+
+#### 2. Network Flow
+- Internet Gateway attached to VPC
+- Public Subnets have direct internet access
+- NAT Gateways in public subnets provide internet access for private subnets
+- Route Tables configured for public and private subnet routing
+
+#### 3. High Availability Features
+- Subnets spread across two Availability Zones
+- Separate NAT Gateways for each AZ
+- Independent route tables for each subnet type
+
+Next, we are going to use CloudFormation to implement the described cloud architecture.
 
 ## Cloud Infrastructure resource requirements
 Bellow is the requirements that were demanded by the client:
@@ -53,20 +72,31 @@ We have created a bash script to help us in the process of creating and deleting
 
 We first deployed our VPC and associated networking resources using the `run.sh` script:
 ```bash
-scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/ec2.yml parameters/ec2-parameters.json
+scripts/run.sh create-stack us-east-1 UdagramNetworking stack_templates/networking.yml parameters/networking-parameters.json
 ```
 
 After a few minutes with the stack showing the status `CREATE_COMPLETE`, we followed with the deployment of our servers.
 
-```
+```bash
 scripts/run.sh create-stack us-east-1 UdagramEC2 stack_templates/ec2.yml parameters/ec2-parameters.json
 ```
 
 ## Resources created
 The images below illustrate the AWS resources created through the above CloudFormation stacks.
 
+### CloudFormation stacks
+The networking and EC2 stacks with `CREATE_COMPLETE` status. 
+![CloudFormation Stacks](images/cloudformation_stacks.png)
+
+### EC2 Resources
+All the EC2 resources like EC2 Instances, Auto Scaling Groups, Key Pairs, Load Balancers, can be found listed in the EC2 overview page after CloudFormation stack creation.
+![EC2 Resources](images/ec2_resources.png)
+
 ### S3 buckets
+The picture bellow shows the S3 bucket "udacity-devops-nanodegree-projec2-static-content" we created for storing static content.
 ![S3 buckets](images/s3_buckets_project2.png)
+
+
 
 ## Deleting resources
 After using the cloud infrustructure designed in this project, we may want to delete it, in order to avoid cloud cost. We can also use our `run.sh` script for it:
@@ -76,6 +106,7 @@ scripts/run.sh delete us-east-1 UdagramNetworking
 ```
 
 ## Final thoughts
+The current project has demonstrated how powerful CloudFormation is a IaC framework. With just a few YAML and JSON files, we can deploy a complex Cloud Infrastructure with different services integrated in the same architecture, making the deployment process replicable between environments and teams.
 
 ## References
 - [GitHub repository with project templates](https://github.com/udacity/-cd12352-Deploy-Infrastructure-as-Code-project/blob/main/starter/README.md)
