@@ -96,6 +96,11 @@ All the EC2 resources like EC2 Instances, Auto Scaling Groups, Key Pairs, Load B
 The picture bellow shows the S3 bucket "udacity-devops-nanodegree-projec2-static-content" we created for storing static content.
 ![S3 buckets](images/s3_buckets_project2.png)
 
+### Load balance DNS address and web page
+Finally we can check the output generated for the EC2 stack and the web page.
+![CloudFormation Output](images/cloudformation_ec2_output.png)
+![DNS Address](images/dns_address_page.png)
+
 
 
 ## Deleting resources
