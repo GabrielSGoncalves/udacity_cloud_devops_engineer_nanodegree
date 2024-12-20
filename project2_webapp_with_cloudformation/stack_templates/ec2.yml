@@ -138,6 +138,13 @@ Resources:
         IamInstanceProfile:
           Name: !Ref UdagramInstanceProfile
         KeyName: !Ref UdagramKeyPair
+        BlockDeviceMappings:
+          - DeviceName: /dev/sda1
+            Ebs:
+              VolumeSize: 10
+              VolumeType: gp3
+              Encrypted: true
+              DeleteOnTermination: true
         UserData:
           Fn::Base64: !Sub |
             #!/bin/bash
