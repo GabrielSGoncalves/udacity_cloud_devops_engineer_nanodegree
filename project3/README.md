@@ -38,7 +38,7 @@ minikube start
 ```
 ```bash
 minikube kubectl -- get po -A
-
+```
 
 ### Kubectl
 
