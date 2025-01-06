@@ -42,5 +42,13 @@ minikube kubectl -- get po -A
 
 ### Kubectl
 
+- Checking logs
+```bash
+kubectl logs <POD_NAME> -c <CONTAINER_NAME>
+```
+
+- Debugging with Kubernetes
+```
+
 ## References
 - [Minikube start](https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download)
