@@ -171,7 +171,96 @@ postgresql-77d75d45d5-p29fx   1/1     Running   0          84s
 
 ### Accessing the Postgres database
 We can access the Postgres deployed on the EKS cluster through `kubectl` command:
+```bash
+kubectl exec -it postgresql-77d75d45d5-p29fx -- bash
+```
+And `psql` to login to the Postgres database:
+```bash
+psql -U myuser -d mydatabase
+```
 
+### Connecting via Port Fowarding
+Create file `postgresql-service.yaml` for exposing the database to user access:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-service
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: postgresql
+```
+And run the `kubectl` command to activate the Port Forward:
+```bash
+kubectl apply -f postgresql-service.yaml
+```
+We can check the available services on our EKS cluster:
+```bash
+kubectl get svc
+```
+```
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+kubernetes           ClusterIP   10.100.0.1       <none>        443/TCP    29m
+postgresql-service   ClusterIP   10.100.179.103   <none>        5432/TCP   15s
+```
+And setup the port-forwarding to the postgresql-service:
+```bash
+kubectl port-forward service/postgresql-service 5433:5432 &
+```
+
+### Accessing the Postgres database from local machine
+After installing locally `postgresql` libs:
+```bash
+apt install postgresql postgresql-contrib
+```
+
+We can try running SQL statements:
+```
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433 < 1_create_tables.sql
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433 < 2_seed_users.sql
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433 < 3_seed_tokens.sql
+```
+
+And finally check the data using SQL queries:
+```
+PGPASSWORD="$DB_PASSWORD" psql --host 127.0.0.1 -U myuser -d mydatabase -p 5433
+```
+```
+select * from users limit 20;
+```
+
+```
+id | first_name | last_name |         joined_at          | is_active 
+----+------------+-----------+----------------------------+-----------
+  1 | Cristopher | Alexander | 2023-01-20 03:23:39.757813 | t
+  2 | Dakota     | Gardner   | 2023-02-02 16:23:39.75783  | t
+  3 | Mattie     | Moyer     | 2023-01-31 10:23:39.757836 | t
+  4 | Darien     | Gamble    | 2023-02-13 05:23:39.75784  | t
+  5 | Luca       | Abbott    | 2023-02-11 22:23:39.757844 | t
+  6 | Valeria    | Franklin  | 2023-02-07 18:23:39.757848 | t
+  7 | Courtney   | Waters    | 2022-12-26 05:23:39.757852 | t
+  8 | Aiyana     | Liu       | 2023-01-10 15:23:39.757855 | t
+  9 | Weston     | Clark     | 2023-01-18 17:23:39.757859 | t
+ 10 | Karla      | Oneal     | 2023-01-16 04:23:39.757862 | t
+ 11 | Dawson     | Taylor    | 2023-01-02 03:23:39.757866 | t
+ 12 | Aniyah     | Marquez   | 2023-02-05 17:23:39.757869 | t
+ 13 | Tanya      | Martin    | 2023-01-29 18:23:39.757873 | t
+ 14 | Gilberto   | Spears    | 2022-12-16 01:23:39.757876 | t
+ 15 | Saniyah    | Jimenez   | 2023-01-24 16:23:39.75788  | t
+ 16 | Warren     | Griffith  | 2023-02-12 23:23:39.757883 | t
+ 17 | Kellen     | Harrison  | 2023-01-02 11:23:39.757886 | t
+ 18 | Carolina   | Schwartz  | 2023-01-15 06:23:39.75789  | t
+ 19 | Camille    | Curry     | 2022-12-20 12:23:39.757893 | t
+ 20 | Erik       | Ramirez   | 2023-02-12 05:23:39.757897 | t
+```
+
+To close the forwarded ports:
+```bash
+ps aux | grep 'kubectl port-forward' | grep -v grep | awk '{print $2}' | xargs -r kill
+```
 
 
 ### Deleting the EKS cluster
