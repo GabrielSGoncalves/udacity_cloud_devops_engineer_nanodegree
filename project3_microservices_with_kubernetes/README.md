@@ -268,6 +268,60 @@ ps aux | grep 'kubectl port-forward' | grep -v grep | awk '{print $2}' | xargs -
 eksctl delete cluster --name my-cluster --region us-east-1
 ```
 
+## Building the analytics application locally
+Before we run the application locally, we need to install the dependencies:
+```bash
+sudo apt update
+sudo apt install build-essential libpq-dev
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+```
+
+Next, we create a `.env` for storing the local variables:
+```
+# .env
+DB_USERNAME=myuser
+DB_PASSWORD=${POSTGRES_PASSWORD}
+DB_HOST=127.0.0.1
+DB_PORT=5433
+DB_NAME=mydatabase
+```
+And export it using:
+```bash
+export $(grep -v '^#' .env | xargs)
+```
+We need to setup the forward port for connecting to the Postgres service before executing the application.
+```bash
+kubectl port-forward --namespace default svc/postgresql-service 5433:5432 &
+```
+```bash
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace default svc/postgresql-service -o jsonpath="{.data.postgres-password}" | base64 -d)
+```
+
+Now we can run the application.
+```bash
+python3 app.py
+```
+
+Verifying the application.
+```bash
+curl 127.0.0.1:5153/api/reports/daily_usage
+```
+```
+{"2023-02-07":21,"2023-02-08":111,"2023-02-09":96,"2023-02-10":87,"2023-02-11":88,"2023-02-12":105,"2023-02-13":103,"2023-02-14":65}
+```
+```bash
+curl 127.0.0.1:5153/api/reports/user_visits
+
+```
+```
+{"1":{"joined_at":"2023-01-20 03:23:39.757813","visits":3},"3":{"joined_at":"2023-01-31 10:23:39.757836","visits":4},"5":{"joined_at":"2023-02-11 22:23:39.757844","visits":2},"6":{"joined_at":"2023-02-07 18:23:39.757848","visits":1},"7":{"joined_at":"2022-12-26 05:23:39.757852","visits":3},"8":{"joined_at":"2023-01-10 15:23:39.757855","visits":4},"9":{"joined_at":"2023-01-18 17:23:39.757859","visits":1},"10":{"joined_at":"2023-01-16 04:23:39.757862","visits":3},"11":{"joined_at":"2023-01-02 03:23:39.757866","visits":3},"12":{"joined_at":"2023-02-05 17:23:39.757869","visits":3},"13":{"joined_at":"2023-01-29 18:23:39.757873","visits":4},"14":{"joined_at":"2022-12-16 01:23:39.757876","visits":3},"16":{"joined_at":"2023-02-12 23:23:39.757883","visits":5},"17":
+...
+```
+
+
+
+
 
 ## Drafting the project steps:
 -[x] Fork and clone repo
