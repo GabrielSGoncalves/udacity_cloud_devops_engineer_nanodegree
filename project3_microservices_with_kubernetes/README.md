@@ -16,8 +16,9 @@ For this project, you are a DevOps engineer who will be collaborating with a tea
 
 ## Objectives
 Based on the description, we have the following project objectives:
-1. 
-2. 
+1. Create an EKS clusters
+2. Deploy Postgres database and dockerized application
+3. Create Codecommit integration
 
 ## Project Instructions
 
@@ -319,20 +320,46 @@ curl 127.0.0.1:5153/api/reports/user_visits
 ...
 ```
 
+## Dockerizing the application
+Next, we need to dockerize our tested application.
+First, we need to create our Dockerfile.
+```
+FROM python:3.10-slim-buster
 
+WORKDIR /src
 
+COPY ./app/requirements.txt requirements.txt
 
+RUN pip install -r requirements.txt
 
-## Drafting the project steps:
--[x] Fork and clone repo
--[x] Create AWS user for using CLI
--[x] Install eksctl
--[x] Create k8s cluster on AWS with eksctl
--[x] Delete k8s cluster on AWS with eksctl
--[x] Configuring kubectl to interect with EKS cluster
--[ ]
--[ ]
--[ ]
+COPY ./app .
+
+CMD python app.py
+```
+To create a Docker image with our application, we simply run:
+```bash
+docker build -t analytics-test-docker .
+```
+
+You can check if the image was created using:
+```bash
+docker images
+```
+And create a Docker container from the created image:
+```bash
+```
+docker run --network="host" --env-file .env analytics-test-docker
+```
+
+## Setting up CI with AWS CodeBuild
+Moving on, we need to create a Continuous Integration pipeline for deploying our application based on Git repository changes. 
+We'll first create an AWS ECR repository to host our Docker images:
+```bash
+aws ecr create-repository \
+    --repository-name coworking-analytics \
+    --image-scanning-configuration scanOnPush=true
+```
+
 
 ### Local development with Minikube
 We are going to use Minikube for initial testing locally, preventing unecessary cloud cost.
