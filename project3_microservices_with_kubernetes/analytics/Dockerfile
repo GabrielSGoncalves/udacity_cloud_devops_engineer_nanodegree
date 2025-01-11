@@ -4,7 +4,7 @@ WORKDIR /src
 
 COPY ./app/requirements.txt requirements.txt
 
-RUN pip install -r requirements.txt -y
+RUN pip install -r requirements.txt
 
 COPY ./app .
 
